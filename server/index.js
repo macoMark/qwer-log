@@ -1,10 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const db = require('./database');
+// const db = require('./database');
+const db = require('./db_adapter');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -31,17 +32,17 @@ app.post('/api/auth/signup', (req, res) => {
     // Hash password
     const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
-    const stmt = db.prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-    stmt.run(username, hashedPassword, function (err) {
+    // Postgres: Use RETURNING id to get the new ID
+    db.run("INSERT INTO users (username, password) VALUES (?, ?) RETURNING id", [username, hashedPassword], function (err) {
         if (err) {
-            if (err.message.includes('UNIQUE constraint failed')) {
+            // Postgres unique constraint error code is 23505
+            if (err.message.includes('duplicate key') || err.code === '23505') {
                 return res.status(400).json({ error: 'Username already exists' });
             }
             return res.status(500).json({ error: err.message });
         }
         res.json({ id: this.lastID, message: 'User created' });
     });
-    stmt.finalize();
 });
 
 app.post('/api/auth/login', (req, res) => {
@@ -291,3 +292,5 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+module.exports = app;
