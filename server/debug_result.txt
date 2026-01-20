@@ -1,0 +1,10 @@
+Distinct Types in DB: ["concert","anniversary","individual","broadcast","sponsor","awards","overseas","busking","univ_festival","festival","showcase","fansign"]
+--- Frontend Logic Simulation ---
+Total Events (Filtered): 63
+Attended (Filtered): 63
+Rate: 100 %
+
+--- Backend Logic Simulation ---
+Total Valid Events (Denominator): 63
+Valid Attendance (Numerator): 63
+Rate: 100 %

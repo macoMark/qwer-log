@@ -1,0 +1,9 @@
+--- Frontend Logic (Partial User) ---
+Total (Filtered): 63
+Attended (Filtered): 13
+Rate: 21 %
+
+--- Backend Logic (Partial User) ---
+Total (Denominator): 63
+Valid Attended (Numerator): 13
+Rate: 21 %
