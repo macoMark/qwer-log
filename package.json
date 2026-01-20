@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "cd client && npm install && npm run build"
+  },
   "dependencies": {
     "body-parser": "^2.2.2",
     "cors": "^2.8.5",
