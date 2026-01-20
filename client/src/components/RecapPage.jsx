@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import confetti from 'canvas-confetti'
+import html2canvas from 'html2canvas'
+import { motion } from 'framer-motion'
 import BadgeImage from './ui/BadgeImage'
 
 function RecapPage({ user }) {
@@ -9,7 +11,57 @@ function RecapPage({ user }) {
     const [data, setData] = useState(null)
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [isDownloading, setIsDownloading] = useState(false)
     const targetYear = year || '2025'
+
+    const handleDownload = async () => {
+        setIsDownloading(true)
+        const element = document.getElementById('recap-capture-area')
+        if (!element) {
+            setIsDownloading(false)
+            return
+        }
+
+        try {
+            const canvas = await html2canvas(element, {
+                backgroundColor: '#050511', // Force background color
+                scale: 2, // High resolution
+                logging: false,
+                useCORS: true, // Allow cross-origin images (important for badges)
+                onclone: (clonedDoc) => {
+                    // Fix 'bg-clip-text' rendering issue in html2canvas
+                    const gradientTexts = clonedDoc.querySelectorAll('.bg-clip-text')
+                    gradientTexts.forEach(el => {
+                        el.style.background = 'none'
+                        el.style.webkitTextFillColor = 'initial'
+                        el.style.color = '#c084fc' // Fallback color (purple-400)
+                    })
+
+                    // Force all animated elements to be visible in the clone
+                    // Framer motion transforms might be in partial state or hidden
+                    const style = clonedDoc.createElement('style');
+                    style.innerHTML = `
+                        * {
+                            opacity: 1 !important;
+                            transform: none !important;
+                            transition: none !important;
+                            animation: none !important;
+                        }
+                    `;
+                    clonedDoc.body.appendChild(style);
+                }
+            })
+
+            const link = document.createElement('a')
+            link.download = `${targetYear}_QWER_Recap.png`
+            link.href = canvas.toDataURL('image/png')
+            link.click()
+        } catch (err) {
+            console.error("Capture failed:", err)
+        } finally {
+            setIsDownloading(false)
+        }
+    }
 
 
     useEffect(() => {
@@ -63,6 +115,29 @@ function RecapPage({ user }) {
     const attendanceRate = stats.attendanceRate
     const favoriteTypeLabel = stats.favoriteType
 
+    // Animation Variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.15
+            }
+        }
+    }
+
+    const cardVariants = {
+        hidden: { y: 30, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.6,
+                ease: "easeOut"
+            }
+        }
+    }
+
     return (
         <div className="bg-[#050511] text-white min-h-screen relative overflow-x-hidden">
             <style>{`
@@ -114,39 +189,59 @@ function RecapPage({ user }) {
                     </button>
                     <h1 className="text-lg font-bold tracking-tight">{targetYear} Recap</h1>
                 </div>
+                <button
+                    onClick={handleDownload}
+                    disabled={isDownloading}
+                    className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors disabled:opacity-50"
+                    title="이미지로 저장"
+                >
+                    {isDownloading ? (
+                        <span className="material-symbols-outlined text-2xl animate-spin">progress_activity</span>
+                    ) : (
+                        <span className="material-symbols-outlined text-2xl">download</span>
+                    )}
+                </button>
             </header>
 
-            <main className="px-6 pb-12 relative z-10">
-                <div className={`text-center space-y-4 py-12 transition-all duration-1000 delay-100 opacity-100 translate-y-0`}>
-
+            <main className="px-6 pb-12 relative z-10" id="recap-capture-area">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                    className={`text-center space-y-4 py-12`}
+                >
                     <h1 className="text-5xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]">
                         RECAP {targetYear}
                     </h1>
                     <p className="text-gray-400 text-lg">바위게님과 QWER의 1년</p>
-                </div>
+                </motion.div>
 
 
-
-                <section className="space-y-6 mb-10">
+                <motion.section
+                    className="space-y-6 mb-10"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="glass-panel p-4 rounded-xl flex flex-col justify-center min-h-[140px]">
+                        <motion.div variants={cardVariants} className="glass-panel p-4 rounded-xl flex flex-col justify-center min-h-[140px]">
                             <p className="text-sm font-semibold text-white/70 mb-1">올 해 QWER과</p>
                             <p className="text-3xl font-black text-[var(--neon-pink)] leading-none">
                                 {stats.totalMeetingCount}번<br />
                                 <span className="text-xl text-white">만났어요</span>
                             </p>
-                        </div>
-                        <div className="glass-panel p-4 rounded-xl flex flex-col justify-center min-h-[140px]">
+                        </motion.div>
+                        <motion.div variants={cardVariants} className="glass-panel p-4 rounded-xl flex flex-col justify-center min-h-[140px]">
                             <p className="text-sm font-semibold text-white/70 mb-1">연간 출석률</p>
                             <p className="text-3xl font-black text-[var(--neon-cyan)] leading-none">
                                 {attendanceRate}%<br />
                                 <span className="text-xl text-white">달성</span>
                             </p>
                             <p style={{ fontSize: '0.7rem', color: '#888888', marginTop: '0.5rem' }}>* 팬사인회, 해외 이벤트 제외</p>
-                        </div>
+                        </motion.div>
                     </div>
 
-                    <div className="glass-panel p-5 rounded-xl flex items-center justify-between">
+                    <motion.div variants={cardVariants} className="glass-panel p-5 rounded-xl flex items-center justify-between">
                         <div>
                             <p className="text-sm font-semibold text-white/70 mb-1">함께한 시간</p>
                             <p className="text-3xl font-black text-[var(--neon-lime)]">{timeString}</p>
@@ -154,9 +249,9 @@ function RecapPage({ user }) {
                         <div className="bg-white/10 p-3 rounded-full">
                             <span className="material-symbols-outlined text-2xl text-[var(--neon-lime)]">schedule</span>
                         </div>
-                    </div>
+                    </motion.div>
 
-                    <div className="glass-panel p-5 rounded-xl flex items-center justify-between">
+                    <motion.div variants={cardVariants} className="glass-panel p-5 rounded-xl flex items-center justify-between">
                         <div>
                             <p className="text-sm font-semibold text-white/70 mb-1">가장 사랑한 순간</p>
                             <p className="text-3xl font-black text-white decoration-wavy decoration-[var(--neon-purple)] underline decoration-2 underline-offset-4">
@@ -166,8 +261,8 @@ function RecapPage({ user }) {
                         <div className="bg-white/10 p-3 rounded-full">
                             <span className="material-symbols-outlined text-2xl text-[var(--neon-purple)]">favorite</span>
                         </div>
-                    </div>
-                </section>
+                    </motion.div>
+                </motion.section>
 
                 <section>
                     <div className="flex items-center justify-between mb-4">
@@ -183,8 +278,15 @@ function RecapPage({ user }) {
                                 획득한 뱃지가 없어요.
                             </div>
                         ) : (
-                            earnedBadges.map((badge) => (
-                                <div key={badge.badge_id} className="glass-panel rounded-xl p-4 flex items-center gap-5 border border-white/5 relative overflow-hidden transition-all hover:bg-white/5">
+                            earnedBadges.map((badge, index) => (
+                                <motion.div
+                                    key={badge.badge_id}
+                                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                                    viewport={{ once: true, margin: "-10%" }}
+                                    transition={{ duration: 0.5, delay: index * 0.05 }} // Slight stagger per item
+                                    className="glass-panel rounded-xl p-4 flex items-center gap-5 border border-white/5 relative overflow-hidden transition-all hover:bg-white/5"
+                                >
                                     <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center relative z-10">
                                         <BadgeImage src={badge.badge_image_url} alt={badge.badge_name} className="w-full h-full object-contain drop-shadow-lg transition-transform hover:scale-110 duration-300" />
                                     </div>
@@ -197,7 +299,7 @@ function RecapPage({ user }) {
                                         </div>
                                         <p className="text-sm text-slate-300 mt-2 leading-relaxed">{badge.badge_detail}</p>
                                     </div>
-                                </div>
+                                </motion.div>
                             ))
                         )}
                     </div>
