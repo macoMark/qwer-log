@@ -109,7 +109,7 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
 
     // 낭만의 큐떱카
     if (counts.busking === 3) earnedCandidateCodes.push('busking-2');
-    else if (counts.busking >= 1) earnedCandidateCodes.push('busking-1');
+    if (counts.busking >= 1) earnedCandidateCodes.push('busking-1');
 
     // 오프라인 등급 (QWER)
     // qwer-3: 이벤트 50% 이상 참석
@@ -139,6 +139,9 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
         if (isNaN(level)) return true; // 숫자가 없으면 단일 뱃지이므로 유지
 
         const baseCode = parts.slice(0, -1).join('-');
+
+        // busking은 레벨별 중복 획득 허용
+        if (baseCode === 'busking') return true;
 
         // 같은 baseCode를 가진 다른 뱃지들 중 더 높은 레벨이 있는지 확인
         const hasHigherLevel = self.some(otherCode => {

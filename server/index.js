@@ -182,7 +182,7 @@ app.get('/api/user/badges', (req, res) => {
     if (!userId) return res.status(400).json({ error: 'userId is required' });
 
     // 1. Get all badges definitions
-    db.all("SELECT * FROM badges", [], (err, badges) => {
+    db.all("SELECT * FROM badges ORDER BY priority ASC", [], (err, badges) => {
         if (err) return res.status(500).json({ error: err.message });
 
         // 2. Get user's attended events with details (Filtered by Year)
