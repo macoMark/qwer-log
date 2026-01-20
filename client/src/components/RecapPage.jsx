@@ -253,7 +253,7 @@ function RecapPage({ user }) {
 
                     <motion.div variants={cardVariants} className="glass-panel p-5 rounded-xl flex items-center justify-between">
                         <div>
-                            <p className="text-sm font-semibold text-white/70 mb-1">가장 사랑한 순간</p>
+                            <p className="text-sm font-semibold text-white/70 mb-1">가장 사랑하는 오프 유형</p>
                             <p className="text-3xl font-black text-white decoration-wavy decoration-[var(--neon-purple)] underline decoration-2 underline-offset-4">
                                 {favoriteTypeLabel}
                             </p>
