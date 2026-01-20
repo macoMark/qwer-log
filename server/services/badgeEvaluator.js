@@ -44,6 +44,7 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
         harsh: attendedTags.filter(t => t === 'harsh').length,
         busking: attendedTags.filter(t => t === 'busking').length,
         draw: attendedTags.filter(t => t === 'draw').length,
+        sanok: attendedTags.filter(t => t === 'sanok').length,
     };
 
     let earnedCandidateCodes = [];
@@ -81,7 +82,7 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
     if (counts.rockfest === 3) earnedCandidateCodes.push('rockneverdie');
 
     // 특정 이벤트/태그 기반
-    if (attendedCodes.includes('2025-broad-mcount-1')) earnedCandidateCodes.push('sanok');
+    if (counts.sanok >= 1) earnedCandidateCodes.push('sanok');
     if (counts.qbung >= 1) earnedCandidateCodes.push('qbung');
     if (counts.anniversary >= 1) earnedCandidateCodes.push('anni-1');
     if (counts.harsh >= 1) earnedCandidateCodes.push('harsh');
@@ -94,7 +95,7 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
     else if (counts.festival >= 6) earnedCandidateCodes.push('party-1');
 
     // 대화의 희열
-    if (counts.fansign === 18) earnedCandidateCodes.push('fansign-3');
+    if (counts.fansign >= 18) earnedCandidateCodes.push('fansign-3');
     else if (counts.fansign >= 10) earnedCandidateCodes.push('fansign-2');
     else if (counts.fansign >= 1) earnedCandidateCodes.push('fansign-1');
 
@@ -140,8 +141,8 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
 
         const baseCode = parts.slice(0, -1).join('-');
 
-        // busking은 레벨별 중복 획득 허용
-        if (baseCode === 'busking') return true;
+        // const baseCode = parts.slice(0, -1).join('-'); // Moved below
+
 
         // 같은 baseCode를 가진 다른 뱃지들 중 더 높은 레벨이 있는지 확인
         const hasHigherLevel = self.some(otherCode => {
