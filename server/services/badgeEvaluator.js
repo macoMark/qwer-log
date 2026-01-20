@@ -109,7 +109,7 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
 
     // 낭만의 큐떱카
     if (counts.busking === 3) earnedCandidateCodes.push('busking-2');
-    else if (counts.busking >= 2) earnedCandidateCodes.push('busking-1');
+    else if (counts.busking >= 1) earnedCandidateCodes.push('busking-1');
 
     // 오프라인 등급 (QWER)
     // qwer-3: 이벤트 50% 이상 참석
