@@ -74,21 +74,21 @@ const badges = [
         "priority": 80
     },
     {
-        "badge_code": "party-1",
+        "badge_code": "party-half",
         "badge_name": "파티피플 Silver",
         "badge_condition": "전체 페스티벌 중 50% 이상 참여",
         "badge_detail": "오 좀 놀 줄 아는 놈인가?",
         "badge_logic_memo": "획득한 tags가 festival >=6 and festival =! 12",
-        "badge_image_url": "/assets/badges/party-1.png",
+        "badge_image_url": "/assets/badges/party-half.png",
         "priority": 90
     },
     {
-        "badge_code": "party-2",
+        "badge_code": "party-all",
         "badge_name": "파티피플 Master",
         "badge_condition": "전체 페스티벌 참여",
         "badge_detail": "오 좀 놀 줄 아는 놈인가?",
         "badge_logic_memo": "획득한 tags가 festival = 12",
-        "badge_image_url": "/assets/badges/party-2.png",
+        "badge_image_url": "/assets/badges/party-all.png",
         "priority": 100
     },
     {
@@ -101,21 +101,21 @@ const badges = [
         "priority": 110
     },
     {
-        "badge_code": "fansign-2",
+        "badge_code": "fansign-half",
         "badge_name": "대화의 희열 Silver",
         "badge_condition": "팬싸인회 50% 이상 참석",
         "badge_detail": "멤버들과 아이컨택 과다! 심장에 무리가 올 수 있습니다.",
         "badge_logic_memo": "획득한 tags가 fansign >=10 and fansign=! 18",
-        "badge_image_url": "/assets/badges/fansign-2.png",
+        "badge_image_url": "/assets/badges/fansign-half.png",
         "priority": 120
     },
     {
-        "badge_code": "fansign-3",
+        "badge_code": "fansign-all",
         "badge_name": "대화의 희열 Master",
         "badge_condition": "모든 팬싸인회 참석",
         "badge_detail": "멤버들과 아이컨택 과다! 심장에 무리가 올 수 있습니다.",
         "badge_logic_memo": "획득한 tags가 fansign=18",
-        "badge_image_url": "/assets/badges/fansign-3.png",
+        "badge_image_url": "/assets/badges/fansign-all.png",
         "priority": 130
     },
     {
@@ -128,12 +128,12 @@ const badges = [
         "priority": 140
     },
     {
-        "badge_code": "overseas-2",
+        "badge_code": "overseas-5",
         "badge_name": "비행기 타고가요 Master",
         "badge_condition": "해외 이벤트 5회 이상 참석",
         "badge_detail": "여권 도장이 꽉 찼어요! 그 곳이 어디든 QWER만 있다면 !",
         "badge_logic_memo": "획득한 tags가 overseas >=5",
-        "badge_image_url": "/assets/badges/overseas-2.png",
+        "badge_image_url": "/assets/badges/overseas-5.png",
         "priority": 150
     },
     {
@@ -146,21 +146,21 @@ const badges = [
         "priority": 160
     },
     {
-        "badge_code": "univ-2",
+        "badge_code": "univ-half",
         "badge_name": "현직 대학생 Silver",
         "badge_condition": "대학축제 50% 이상 참석",
         "badge_detail": "애니멀 싸운드 발사!!",
         "badge_logic_memo": "획득한 tags가 univ >=6",
-        "badge_image_url": "/assets/badges/univ-2.png",
+        "badge_image_url": "/assets/badges/univ-half.png",
         "priority": 170
     },
     {
-        "badge_code": "univ-3",
+        "badge_code": "univ-all",
         "badge_name": "현직 대학생 Master",
         "badge_condition": "모든 대학축제 참석",
         "badge_detail": "전국의 대학교 섭렵! 애니멀 싸운드 발사!!",
         "badge_logic_memo": "획득한 tags가 univ = 12",
-        "badge_image_url": "/assets/badges/univ-3.png",
+        "badge_image_url": "/assets/badges/univ-all.png",
         "priority": 180
     },
     {
@@ -182,12 +182,12 @@ const badges = [
         "priority": 200
     },
     {
-        "badge_code": "anni-1",
+        "badge_code": "anni-all",
         "badge_name": "happy birthday!",
         "badge_condition": "모든 생일, 2주년 이벤트 카페 참석",
         "badge_detail": "기쁜 날엔 언제나 우리가 함께야!",
         "badge_logic_memo": "획득한 tags가 anniversary >=1",
-        "badge_image_url": "/assets/badges/anni-1.png",
+        "badge_image_url": "/assets/badges/anni-all.png",
         "priority": 210
     },
     {
@@ -209,12 +209,12 @@ const badges = [
         "priority": 230
     },
     {
-        "badge_code": "busking-2",
+        "badge_code": "busking-all",
         "badge_name": "낭만의 큐떱카 Master",
         "badge_condition": "모든 국내 버스킹 이벤트 참석",
         "badge_detail": "QWER x 바위게 - 낭만 = 0",
         "badge_logic_memo": "획득한 tags가 busking = 3",
-        "badge_image_url": "/assets/badges/busking-2.png",
+        "badge_image_url": "/assets/badges/busking-all.png",
         "priority": 240
     },
     {
@@ -236,23 +236,23 @@ const badges = [
         "priority": 260
     },
     {
-        "badge_code": "qwer-2",
+        "badge_code": "qwer-10",
         "badge_name": "오프 중수",
         "badge_condition": "이벤트 10개 이상 참석",
         "badge_detail": "덕질과 인생의 적절한 조화를 아는 당신",
         "badge_logic_memo": "참석한 이벤트가 10개 이상",
-        "badge_image_url": "/assets/badges/qwer-2.png",
+        "badge_image_url": "/assets/badges/qwer-10.png",
         "priority": 270
     },
     {
-        "badge_code": "qwer-3",
+        "badge_code": "qwer-30",
         "badge_name": "오프 고인물",
         "badge_condition": "이벤트 50% 이상 참석",
         "badge_detail": "당신을 모르는 바위게가 있나요?",
         "badge_logic_memo": "참석한 이벤트가 50% 이상",
-        "badge_image_url": "/assets/badges/qwer-3.png",
+        "badge_image_url": "/assets/badges/qwer-30.png",
         "priority": 280
-    }
+    },
 ];
 
 // Helper to run sequential inserts

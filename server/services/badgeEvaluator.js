@@ -86,8 +86,8 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
     if (counts.qbung >= 1) earnedCandidateCodes.push('qbung');
 
     // Anniversary Badge Logic
-    if (counts.anniversary >= 4) earnedCandidateCodes.push('anni-1');
-    else if (counts.anniversary >= 2) earnedCandidateCodes.push('anni-0');
+    if (counts.anniversary >= 4) earnedCandidateCodes.push('anni-all');
+    else if (counts.anniversary >= 2) earnedCandidateCodes.push('anni-half');
 
     if (counts.harsh >= 1) earnedCandidateCodes.push('harsh');
     if (counts.draw >= 1) earnedCandidateCodes.push('yulyul');
@@ -95,25 +95,25 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
     // --- [2. 레벨형 뱃지 로직 (최고 단계 판별용)] ---
 
     // 파티피플
-    if (counts.festival === 12) earnedCandidateCodes.push('party-2');
-    else if (counts.festival >= 6) earnedCandidateCodes.push('party-1');
+    if (counts.festival === 12) earnedCandidateCodes.push('party-all');
+    else if (counts.festival >= 6) earnedCandidateCodes.push('party-half');
 
     // 대화의 희열
-    if (counts.fansign >= 18) earnedCandidateCodes.push('fansign-3');
-    else if (counts.fansign >= 10) earnedCandidateCodes.push('fansign-2');
+    if (counts.fansign >= 18) earnedCandidateCodes.push('fansign-all');
+    else if (counts.fansign >= 10) earnedCandidateCodes.push('fansign-half');
     else if (counts.fansign >= 1) earnedCandidateCodes.push('fansign-1');
 
     // 비행기 타고가요
-    if (counts.overseas >= 5) earnedCandidateCodes.push('overseas-2');
+    if (counts.overseas >= 5) earnedCandidateCodes.push('overseas-5');
     else if (counts.overseas >= 1) earnedCandidateCodes.push('overseas-1');
 
     // 현직 대학생
-    if (counts.univ === 12) earnedCandidateCodes.push('univ-3');
-    else if (counts.univ >= 6) earnedCandidateCodes.push('univ-2');
+    if (counts.univ === 12) earnedCandidateCodes.push('univ-all');
+    else if (counts.univ >= 6) earnedCandidateCodes.push('univ-half');
     else if (counts.univ >= 1) earnedCandidateCodes.push('univ-1');
 
     // 낭만의 큐떱카
-    if (counts.busking === 3) earnedCandidateCodes.push('busking-2');
+    if (counts.busking === 3) earnedCandidateCodes.push('busking-all');
     if (counts.busking >= 1) earnedCandidateCodes.push('busking-1');
 
     // 오프라인 등급 (QWER)
@@ -122,8 +122,8 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
     const attendedCount = attendedEvents.length;
     const attendanceRate = totalEvents > 0 ? (attendedCount / totalEvents) : 0;
 
-    if (attendanceRate >= 0.5) earnedCandidateCodes.push('qwer-3');
-    else if (attendedCount >= 10) earnedCandidateCodes.push('qwer-2');
+    if (attendanceRate >= 0.5) earnedCandidateCodes.push('qwer-30');
+    else if (attendedCount >= 10) earnedCandidateCodes.push('qwer-10');
     else if (attendedCount >= 1) earnedCandidateCodes.push('qwer-1');
 
 
@@ -136,26 +136,43 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
 
     // 먼저 earnedCandidateCodes를 정제
     const finalEarnedCodes = earnedCandidateCodes.filter((code, index, self) => {
-        // 코드가 'name-숫자' 형식인지 확인
+        // 코드가 'name-숫자', 'name-half', 'name-all' 형식인지 확인
         const parts = code.split('-');
+        if (parts.length < 2) return true; // 형식이 안맞으면 유지
+
         const lastPart = parts[parts.length - 1];
-        const level = parseInt(lastPart);
-
-        if (isNaN(level)) return true; // 숫자가 없으면 단일 뱃지이므로 유지
-
         const baseCode = parts.slice(0, -1).join('-');
 
-        // const baseCode = parts.slice(0, -1).join('-'); // Moved below
-
+        // 현재 뱃지의 레벨 계산
+        let level = 0;
+        if (lastPart === 'all') level = 9999;
+        else if (lastPart === 'half') level = 50; // half는 중간 단계 (숫자 1,2 등보다 높다고 가정하거나 1<half<all)
+        // 주의: fansign-1 (1) < fansign-half (50) < fansign-all (9999). 적절함.
+        else {
+            const parsed = parseInt(lastPart);
+            if (!isNaN(parsed)) level = parsed;
+            else return true; // 숫자가 아니고 all/half도 아니면 유지
+        }
 
         // 같은 baseCode를 가진 다른 뱃지들 중 더 높은 레벨이 있는지 확인
         const hasHigherLevel = self.some(otherCode => {
             const otherParts = otherCode.split('-');
-            const otherLevel = parseInt(otherParts[otherParts.length - 1]);
+            const otherLastPart = otherParts[otherParts.length - 1];
             const otherBase = otherParts.slice(0, -1).join('-');
 
+            if (baseCode !== otherBase) return false;
+
+            let otherLevel = 0;
+            if (otherLastPart === 'all') otherLevel = 9999;
+            else if (otherLastPart === 'half') otherLevel = 50;
+            else {
+                const p = parseInt(otherLastPart);
+                if (!isNaN(p)) otherLevel = p;
+                else return 0;
+            }
+
             // baseCode가 같고, 레벨이 더 높은 것이 존재하면 탈락
-            return baseCode === otherBase && otherLevel > level;
+            return otherLevel > level;
         });
 
         return !hasHigherLevel;
