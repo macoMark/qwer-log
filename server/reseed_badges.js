@@ -247,9 +247,9 @@ const badges = [
     {
         "badge_code": "qwer-30",
         "badge_name": "오프 고인물",
-        "badge_condition": "이벤트 50% 이상 참석",
+        "badge_condition": "이벤트 30개 이상 참석",
         "badge_detail": "당신을 모르는 바위게가 있나요?",
-        "badge_logic_memo": "참석한 이벤트가 50% 이상",
+        "badge_logic_memo": "참석한 이벤트가 30개 이상",
         "badge_image_url": "/assets/badges/qwer-30.png",
         "priority": 280
     },

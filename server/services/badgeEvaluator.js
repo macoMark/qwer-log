@@ -117,12 +117,12 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
     if (counts.busking >= 1) earnedCandidateCodes.push('busking-1');
 
     // 오프라인 등급 (QWER)
-    // qwer-3: 이벤트 50% 이상 참석
-    const totalEvents = yearEvents.length;
+    // qwer-30: 이벤트 30개 이상 참석
+    const totalEvents = yearEvents.length; // Not strictly needed for this check anymore, but kept if needed elsewhere
     const attendedCount = attendedEvents.length;
-    const attendanceRate = totalEvents > 0 ? (attendedCount / totalEvents) : 0;
+    // const attendanceRate = totalEvents > 0 ? (attendedCount / totalEvents) : 0; // Removed as no longer used for qwer-30
 
-    if (attendanceRate >= 0.5) earnedCandidateCodes.push('qwer-30');
+    if (attendedCount >= 30) earnedCandidateCodes.push('qwer-30');
     else if (attendedCount >= 10) earnedCandidateCodes.push('qwer-10');
     else if (attendedCount >= 1) earnedCandidateCodes.push('qwer-1');
 
