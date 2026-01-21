@@ -74,16 +74,29 @@ function Dashboard({ user, onLogout }) {
     const [selectedYear, setSelectedYear] = useState(2025)
 
     // Scroll Listener for FAB
+    // Scroll Listener for FAB (Updated for internal container scrolling)
     useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 300) {
+        const handleScroll = (e) => {
+            // Check the scrollTarget (should be the .flex-1 container)
+            const target = e.target;
+            if (target.scrollTop > 300) {
                 setShowScrollTop(true)
             } else {
                 setShowScrollTop(false)
             }
         }
-        window.addEventListener('scroll', handleScroll)
-        return () => window.removeEventListener('scroll', handleScroll)
+
+        // Attach to the scrolling container
+        const container = document.querySelector('.overflow-y-auto');
+        if (container) {
+            container.addEventListener('scroll', handleScroll);
+        }
+
+        return () => {
+            if (container) {
+                container.removeEventListener('scroll', handleScroll);
+            }
+        }
     }, [])
 
     // Handlers
@@ -224,9 +237,14 @@ function Dashboard({ user, onLogout }) {
     }
 
     return (
-        <div className="main-container">
-            {/* Header */}
-            <header className="app-header">
+        <div className="main-container" style={{
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden'
+        }}>
+            {/* Header - Fixed Height */}
+            <header className="app-header" style={{ flexShrink: 0 }}>
                 <div className="logo-container" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
                     <img src="/assets/logo.png" alt="QWER LOG" style={{ height: '40px', objectFit: 'contain' }} />
                 </div>
@@ -258,214 +276,220 @@ function Dashboard({ user, onLogout }) {
                 </div>
             </header>
 
-            {/* Control Bar */}
-            <section className="control-bar-section" style={{ padding: '0 1rem', marginTop: '1rem', marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                {/* Year Selector */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                    <button disabled style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'default' }}>&lt;</button>
-                    <span>{selectedYear}</span>
-                    <button disabled style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'default' }}>&gt;</button>
-                </div>
+            {/* Scrollable Content Area */}
+            <div className="flex-1 overflow-y-auto no-scrollbar relative" style={{
+                flex: 1,
+                overflowY: 'auto',
+                position: 'relative'
+            }}>
+                {/* Control Bar */}
+                <section className="control-bar-section" style={{ padding: '0 1rem', marginTop: '1rem', marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {/* Year Selector */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)' }}>
+                        <button disabled style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'default' }}>&lt;</button>
+                        <span>{selectedYear}</span>
+                        <button disabled style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'default' }}>&gt;</button>
+                    </div>
 
-                {/* Recap Button */}
-                <button
-                    onClick={() => {
-                        if (!user) {
-                            navigate('/login')
-                            return
-                        }
-                        navigate(`/recap/${selectedYear}`)
-                    }}
-                    style={{
-                        padding: '0.6rem 2rem',
-                        borderRadius: '2rem',
-                        border: 'none',
-                        background: 'var(--primary)',
-                        color: 'white',
-                        fontSize: '1rem',
-                        fontWeight: 700,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        transition: 'all 0.2s ease',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 6px -1px rgba(231, 60, 131, 0.2)'
-                    }}
-                    onMouseOver={(e) => {
-                        e.currentTarget.style.opacity = '0.9';
-                        e.currentTarget.style.transform = 'translateY(-1px)';
-                    }}
-                    onMouseOut={(e) => {
-                        e.currentTarget.style.opacity = '1';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                    }}
-                >
-                    <span className="material-symbols-outlined" style={{ fontSize: '1.2rem' }}>bar_chart</span>
-                    Recap
-                </button>
-            </section>
+                    {/* Recap Button */}
+                    <button
+                        onClick={() => {
+                            if (!user) {
+                                navigate('/login')
+                                return
+                            }
+                            navigate(`/recap/${selectedYear}`)
+                        }}
+                        style={{
+                            padding: '0.6rem 2rem',
+                            borderRadius: '2rem',
+                            border: 'none',
+                            background: 'var(--primary)',
+                            color: 'white',
+                            fontSize: '1rem',
+                            fontWeight: 700,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            transition: 'all 0.2s ease',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 6px -1px rgba(231, 60, 131, 0.2)'
+                        }}
+                        onMouseOver={(e) => {
+                            e.currentTarget.style.opacity = '0.9';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseOut={(e) => {
+                            e.currentTarget.style.opacity = '1';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                        }}
+                    >
+                        <span className="material-symbols-outlined" style={{ fontSize: '1.2rem' }}>bar_chart</span>
+                        Recap
+                    </button>
+                </section>
 
-            {/* Stats Section */}
-            <section className="stats-section">
-                <div className="stats-card">
-                    <div className="stat-row">
-                        <div className="stat-header">
-                            <p className="stat-label">연간 출석률</p>
-                            <p className="stat-value text-primary">{stats.annual}%</p>
-                        </div>
-                        <div className="progress-bar-bg">
-                            <div className="progress-bar-fill bg-primary" style={{ width: `${stats.annual}%` }}></div>
+                {/* Stats Section */}
+                <section className="stats-section">
+                    <div className="stats-card">
+                        <div className="stat-row">
+                            <div className="stat-header">
+                                <p className="stat-label">연간 출석률</p>
+                                <p className="stat-value text-primary">{stats.annual}%</p>
+                            </div>
+                            <div className="progress-bar-bg">
+                                <div className="progress-bar-fill bg-primary" style={{ width: `${stats.annual}%` }}></div>
+                            </div>
                         </div>
                     </div>
-                    {/* Monthly stat removed as requested */}
-                </div>
-            </section>
+                </section>
 
-            {/* Filter Toggle Bar */}
-            < div className="filter-section" >
-                <div className="filter-chips no-scrollbar">
-                    <span
-                        className={`chip fansign ${!filter.fansign ? 'opacity-50' : ''}`}
-                        onClick={() => setFilter(prev => ({ ...prev, fansign: !prev.fansign }))}
-                        style={{ cursor: 'pointer', opacity: filter.fansign ? 1 : 0.5 }}
+                {/* Filter Toggle Bar */}
+                <div className="filter-section">
+                    <div className="filter-chips no-scrollbar">
+                        <span
+                            className={`chip fansign ${!filter.fansign ? 'opacity-50' : ''}`}
+                            onClick={() => setFilter(prev => ({ ...prev, fansign: !prev.fansign }))}
+                            style={{ cursor: 'pointer', opacity: filter.fansign ? 1 : 0.5 }}
+                        >
+                            {filter.fansign ? '팬싸 포함' : '팬싸 제외'}
+                        </span>
+                        <span
+                            className={`chip overseas ${!filter.overseas ? 'opacity-50' : ''}`}
+                            onClick={() => setFilter(prev => ({ ...prev, overseas: !prev.overseas }))}
+                            style={{ cursor: 'pointer', opacity: filter.overseas ? 1 : 0.5 }}
+                        >
+                            {filter.overseas ? '해외 포함' : '해외 제외'}
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => setFilterModalOpen(true)}
+                        className="flex items-center gap-2 bg-white dark:bg-white/10 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-slate-50 transition-colors"
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '0.5rem', background: 'var(--white)', border: '1px solid #e2e8f0', color: 'var(--text-main)', fontSize: '0.875rem', fontWeight: 700 }}
                     >
-                        {filter.fansign ? '팬싸 포함' : '팬싸 제외'}
-                    </span>
-                    <span
-                        className={`chip overseas ${!filter.overseas ? 'opacity-50' : ''}`}
-                        onClick={() => setFilter(prev => ({ ...prev, overseas: !prev.overseas }))}
-                        style={{ cursor: 'pointer', opacity: filter.overseas ? 1 : 0.5 }}
-                    >
-                        {filter.overseas ? '해외 포함' : '해외 제외'}
-                    </span>
+                        <span className="material-symbols-outlined" style={{ fontSize: '1.25rem' }}>tune</span>
+                        출석률 필터
+                    </button>
                 </div>
-                <button
-                    onClick={() => setFilterModalOpen(true)}
-                    className="flex items-center gap-2 bg-white dark:bg-white/10 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-slate-50 transition-colors"
-                    style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '0.5rem', background: 'var(--white)', border: '1px solid #e2e8f0', color: 'var(--text-main)', fontSize: '0.875rem', fontWeight: 700 }}
-                >
-                    <span className="material-symbols-outlined" style={{ fontSize: '1.25rem' }}>tune</span>
-                    출석률 필터
-                </button>
-            </div >
 
-            {/* Main Content */}
-            < main className="main-content" >
-                {
-                    sortedGroupKeys.map((key, index) => {
-                        const [year, month] = key.split('-')
-                        const monthEvents = groupedEvents[key]
+                {/* Main Content List */}
+                <main className="main-content" style={{ paddingBottom: 'calc(2.5rem + env(safe-area-inset-bottom))' }}>
+                    {
+                        sortedGroupKeys.map((key, index) => {
+                            const [year, month] = key.split('-')
+                            const monthEvents = groupedEvents[key]
 
-                        return (
-                            <div key={key} id={`anchor-month-${index}`} className="month-group">
-                                <div className="sticky-month-header">
-                                    {/* Per-Month Progress Bar & Calc */}
-                                    {(() => {
-                                        // Apply logic filter ONLY for stats calculation
-                                        const calcEvents = monthEvents.filter(ev => {
-                                            if (!filter.fansign && ev.type === 'fansign') return false
-                                            if (!filter.overseas && ev.type === 'overseas') return false
-                                            return true
-                                        })
+                            return (
+                                <div key={key} id={`anchor-month-${index}`} className="month-group">
+                                    <div className="sticky-month-header">
+                                        {/* Per-Month Progress Bar & Calc */}
+                                        {(() => {
+                                            // Apply logic filter ONLY for stats calculation
+                                            const calcEvents = monthEvents.filter(ev => {
+                                                if (!filter.fansign && ev.type === 'fansign') return false
+                                                if (!filter.overseas && ev.type === 'overseas') return false
+                                                return true
+                                            })
 
-                                        const monthTotal = calcEvents.length
-                                        const monthAttended = calcEvents.reduce((acc, ev) => acc + (attendance[ev.id]?.status ? 1 : 0), 0)
-                                        const monthRate = monthTotal > 0 ? Math.round((monthAttended / monthTotal) * 100) : 0
+                                            const monthTotal = calcEvents.length
+                                            const monthAttended = calcEvents.reduce((acc, ev) => acc + (attendance[ev.id]?.status ? 1 : 0), 0)
+                                            const monthRate = monthTotal > 0 ? Math.round((monthAttended / monthTotal) * 100) : 0
 
-                                        return (
-                                            <>
-                                                <div className="month-nav">
-                                                    {index > 0 ? (
-                                                        <button className="nav-btn" onClick={() => scrollToMonth(index - 1)}>
-                                                            <span className="material-symbols-outlined">chevron_left</span>
-                                                        </button>
-                                                    ) : (
-                                                        <div className="w-8"></div> // Spacer
-                                                    )}
+                                            return (
+                                                <>
+                                                    <div className="month-nav">
+                                                        {index > 0 ? (
+                                                            <button className="nav-btn" onClick={() => scrollToMonth(index - 1)}>
+                                                                <span className="material-symbols-outlined">chevron_left</span>
+                                                            </button>
+                                                        ) : (
+                                                            <div className="w-8"></div> // Spacer
+                                                        )}
 
-                                                    <div className="flex flex-col items-center w-full">
-                                                        <h3 className="month-title">
-                                                            {month}월
-                                                            <span style={{ fontSize: '0.8em', color: 'var(--primary)', marginLeft: '8px' }}>
-                                                                ({monthRate}%)
-                                                            </span>
-                                                        </h3>
-                                                    </div>
-
-                                                    {index < sortedGroupKeys.length - 1 ? (
-                                                        <button className="nav-btn" onClick={() => scrollToMonth(index + 1)}>
-                                                            <span className="material-symbols-outlined">chevron_right</span>
-                                                        </button>
-                                                    ) : (
-                                                        <div className="w-8"></div> // Spacer
-                                                    )}
-                                                </div>
-                                                <div className="progress-container">
-                                                    <div className="progress-fill" style={{ width: `${monthRate}%` }}></div>
-                                                </div>
-                                            </>
-                                        )
-                                    })()}
-                                </div>
-
-                                <div className="event-list">
-                                    {monthEvents.map(ev => {
-                                        const isAttended = attendance[ev.id]?.status
-                                        const review = attendance[ev.id]?.review_text
-                                        const specialTypes = ['concert', 'fansign', 'overseas', 'broadcast', 'showcase', 'sponsor', 'busking', 'festival', 'anniversary']
-                                        const typeClass = specialTypes.includes(ev.type) ? ev.type : 'general'
-
-                                        return (
-                                            <div key={ev.id} className={`event-card ${isAttended ? 'highlighted' : ''}`}>
-                                                <div className="event-content">
-                                                    <div className="date-column">
-                                                        <span className={`date-day`}>{getDay(ev.date)}</span>
-                                                        <span className="date-weekday">{getWeekday(ev.date)}</span>
-                                                    </div>
-                                                    <div className="info-column">
-                                                        <div className="tags">
-                                                            <span className={`tag ${typeClass}`}>{TAG_LABELS[ev.type] || ev.type}</span>
-                                                            {ev.location && <span className="tag general">{ev.location}</span>}
+                                                        <div className="flex flex-col items-center w-full">
+                                                            <h3 className="month-title">
+                                                                {month}월
+                                                                <span style={{ fontSize: '0.8em', color: 'var(--primary)', marginLeft: '8px' }}>
+                                                                    ({monthRate}%)
+                                                                </span>
+                                                            </h3>
                                                         </div>
-                                                        <h4 className="event-title">{ev.title}</h4>
 
-                                                        <div className="action-row" style={{ marginTop: '1rem' }}>
-                                                            <button
-                                                                onClick={() => handleNavigateToReview(ev)}
-                                                                className="icon-btn"
-                                                                style={review ? { color: 'var(--primary)', backgroundColor: 'rgba(231, 60, 131, 0.1)' } : {}}
-                                                            >
-                                                                <span className="material-symbols-outlined">chat_bubble</span>
+                                                        {index < sortedGroupKeys.length - 1 ? (
+                                                            <button className="nav-btn" onClick={() => scrollToMonth(index + 1)}>
+                                                                <span className="material-symbols-outlined">chevron_right</span>
                                                             </button>
+                                                        ) : (
+                                                            <div className="w-8"></div> // Spacer
+                                                        )}
+                                                    </div>
+                                                    <div className="progress-container">
+                                                        <div className="progress-fill" style={{ width: `${monthRate}%` }}></div>
+                                                    </div>
+                                                </>
+                                            )
+                                        })()}
+                                    </div>
 
-                                                            <button
-                                                                onClick={() => handleToggleAttendance(ev.id, isAttended)}
-                                                                className={isAttended ? "attendance-badge" : "checkin-btn"}
-                                                            >
-                                                                {isAttended ? (
-                                                                    <>
-                                                                        <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>check_circle</span>
-                                                                        출석함
-                                                                    </>
-                                                                ) : (
-                                                                    "출석 체크"
-                                                                )}
-                                                            </button>
+                                    <div className="event-list">
+                                        {monthEvents.map(ev => {
+                                            const isAttended = attendance[ev.id]?.status
+                                            const review = attendance[ev.id]?.review_text
+                                            const specialTypes = ['concert', 'fansign', 'overseas', 'broadcast', 'showcase', 'sponsor', 'busking', 'festival', 'anniversary']
+                                            const typeClass = specialTypes.includes(ev.type) ? ev.type : 'general'
+
+                                            return (
+                                                <div key={ev.id} className={`event-card ${isAttended ? 'highlighted' : ''}`}>
+                                                    <div className="event-content">
+                                                        <div className="date-column">
+                                                            <span className={`date-day`}>{getDay(ev.date)}</span>
+                                                            <span className="date-weekday">{getWeekday(ev.date)}</span>
+                                                        </div>
+                                                        <div className="info-column">
+                                                            <div className="tags">
+                                                                <span className={`tag ${typeClass}`}>{TAG_LABELS[ev.type] || ev.type}</span>
+                                                                {ev.location && <span className="tag general">{ev.location}</span>}
+                                                            </div>
+                                                            <h4 className="event-title">{ev.title}</h4>
+
+                                                            <div className="action-row" style={{ marginTop: '1rem' }}>
+                                                                <button
+                                                                    onClick={() => handleNavigateToReview(ev)}
+                                                                    className="icon-btn"
+                                                                    style={review ? { color: 'var(--primary)', backgroundColor: 'rgba(231, 60, 131, 0.1)' } : {}}
+                                                                >
+                                                                    <span className="material-symbols-outlined">chat_bubble</span>
+                                                                </button>
+
+                                                                <button
+                                                                    onClick={() => handleToggleAttendance(ev.id, isAttended)}
+                                                                    className={isAttended ? "attendance-badge" : "checkin-btn"}
+                                                                >
+                                                                    {isAttended ? (
+                                                                        <>
+                                                                            <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>check_circle</span>
+                                                                            출석함
+                                                                        </>
+                                                                    ) : (
+                                                                        "출석 체크"
+                                                                    )}
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <div className="bg-watermark">
+                                                        <span className="material-symbols-outlined">album</span>
+                                                    </div>
                                                 </div>
-                                                <div className="bg-watermark">
-                                                    <span className="material-symbols-outlined">album</span>
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
+                                            )
+                                        })}
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    })
-                }
-            </main >
+                            )
+                        })
+                    }
+                </main>
+            </div>
 
             {/* Filter Modal */}
             {
@@ -506,10 +530,15 @@ function Dashboard({ user, onLogout }) {
 
             {/* Scroll to Top FAB */}
             <button
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                onClick={() => {
+                    // Find the scrollable container and scroll IT to top, not window
+                    const container = document.querySelector('.overflow-y-auto');
+                    if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
+                    else window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 style={{
                     position: 'fixed',
-                    bottom: '2rem',
+                    bottom: 'calc(2rem + env(safe-area-inset-bottom))',
                     right: '2rem',
                     backgroundColor: 'var(--white)',
                     color: 'var(--text-main)',
@@ -531,9 +560,7 @@ function Dashboard({ user, onLogout }) {
             >
                 <span className="material-symbols-outlined" style={{ fontSize: '1.5rem' }}>arrow_upward</span>
             </button>
-
-
-        </div >
+        </div>
     )
 }
 

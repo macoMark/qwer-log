@@ -43,12 +43,26 @@
 }
 
 body {
+  width: 100%;
+  min-height: 100vh;
+  /* Fallback */
+  min-height: 100dvh;
   margin: 0;
   font-family: var(--font-display);
   background-color: var(--background-light);
   color: var(--text-main);
-  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  /* Prevent horizontal scroll */
+}
+
+#root {
+  height: 100vh;
+  /* Fallback */
+  height: 100dvh;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
 }
 
 body.dark {
@@ -97,7 +111,16 @@ button {
   font-family: inherit;
 }
 
-/* Layout Components */
+/* App Container */
+.app-container {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  /* Prevent body scroll, let content scroll */
+  display: flex;
+  flex-direction: column;
+}
+
 .app-header {
   display: flex;
   align-items: center;
