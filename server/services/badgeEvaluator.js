@@ -45,6 +45,7 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
         busking: attendedTags.filter(t => t === 'busking').length,
         draw: attendedTags.filter(t => t === 'draw').length,
         sanok: attendedTags.filter(t => t === 'sanok').length,
+        popup: attendedTags.filter(t => t === 'popup').length,
     };
 
     let earnedCandidateCodes = [];
@@ -112,6 +113,10 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
     if (counts.univ === 12) earnedCandidateCodes.push('univ-all');
     else if (counts.univ >= 6) earnedCandidateCodes.push('univ-half');
     else if (counts.univ >= 1) earnedCandidateCodes.push('univ-1');
+
+    // 팝업 스토어
+    if (counts.popup >= 5) earnedCandidateCodes.push('popup-all');
+    else if (counts.popup >= 2) earnedCandidateCodes.push('popup-2');
 
     // 낭만의 큐떱카
     if (counts.busking === 3) earnedCandidateCodes.push('busking-all');
