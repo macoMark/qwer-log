@@ -4,9 +4,9 @@ const badges = [
     {
         "badge_code": "qwermaster",
         "badge_name": "QWER Master",
-        "badge_condition": "모든 일정의 90% 이상 참석",
+        "badge_condition": "모든 일정의 80% 이상 참석",
         "badge_detail": "QWER의 2025년을 통째로 삼키셨군요! 당신은 제5의 멤버입니다.",
-        "badge_logic_memo": "모든 일정의 90% 이상 참석",
+        "badge_logic_memo": "모든 일정의 80% 이상 참석",
         "badge_image_url": "/assets/badges/qwermaster.png",
         "priority": 10
     },

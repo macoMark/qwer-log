@@ -420,7 +420,7 @@ function Dashboard({ user, onLogout }) {
                                         {monthEvents.map(ev => {
                                             const isAttended = attendance[ev.id]?.status
                                             const review = attendance[ev.id]?.review_text
-                                            const specialTypes = ['concert', 'fansign', 'overseas', 'broadcast', 'showcase', 'sponsor', 'busking', 'festival', 'anniversary']
+                                            const specialTypes = ['concert', 'fansign', 'overseas', 'broadcast', 'showcase', 'sponsor', 'busking', 'festival', 'anniversary', 'univ_festival', 'awards']
                                             const typeClass = specialTypes.includes(ev.type) ? ev.type : 'general'
 
                                             return (

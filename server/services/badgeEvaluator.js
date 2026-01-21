@@ -57,7 +57,7 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
     // 분자: 참석한 이벤트 중 fansign/overseas 제외
     const filteredAttended = attendedEvents.filter(e => e.type !== 'fansign' && e.type !== 'overseas');
 
-    if (filteredAll.length > 0 && (filteredAttended.length / filteredAll.length) * 100 >= 90) {
+    if (filteredAll.length > 0 && (filteredAttended.length / filteredAll.length) * 100 >= 80) {
         earnedCandidateCodes.push('qwermaster');
     }
 
