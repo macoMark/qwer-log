@@ -66,7 +66,8 @@ function ReviewCreatePage() {
     }).replace(/\./g, '.').slice(0, -1) // Format: 2024.10.24
 
     return (
-        <div className="review-page-bg min-h-screen flex flex-col overflow-hidden font-display">
+
+        <div className="review-page-bg min-h-screen font-display" style={{ minHeight: '100dvh' }}>
             {/* Header */}
             <header className="sticky top-0 z-50 glass-header">
                 <div className="flex items-center p-4 justify-between max-w-md mx-auto" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '28rem', margin: '0 auto', padding: '1rem' }}>
@@ -90,7 +91,7 @@ function ReviewCreatePage() {
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col max-w-md mx-auto w-full overflow-y-auto custom-scrollbar" style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '28rem', margin: '0 auto', overflowY: 'auto' }}>
+            <main className="max-w-md mx-auto w-full custom-scrollbar" style={{ width: '100%', maxWidth: '28rem', margin: '0 auto', paddingBottom: 'calc(6rem + env(safe-area-inset-bottom))' }}>
                 <div className="px-4 py-4" style={{ padding: '1rem' }}>
                     <div className="review-surface rounded-xl p-4 flex items-center gap-4 shadow-sm" style={{ borderRadius: '0.75rem', padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
                         <div className="flex flex-col justify-center min-w-0">
@@ -104,26 +105,32 @@ function ReviewCreatePage() {
                     </div>
                 </div>
 
-                <div className="flex-1 flex flex-col px-4 pb-6" style={{ padding: '0 1rem 1.5rem 1rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <div className="relative flex-1 flex flex-col">
-                        <label className="flex flex-col flex-1 group" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                            <div className="flex justify-between items-center pb-2 px-1" style={{ paddingBottom: '0.5rem', paddingLeft: '0.25rem' }}>
-                                <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Memories & Feelings</p>
-                            </div>
-                            <textarea
-                                autoFocus
-                                className="review-textarea custom-scrollbar"
-                                placeholder="이 날은 어땠나요? QWER과 함께한 소중한 순간을 기록해 보세요."
-                                value={reviewText}
-                                onChange={(e) => setReviewText(e.target.value)}
-                            />
-                        </label>
-                    </div>
+                <div className="flex flex-col px-4 pb-6" style={{ padding: '0 1rem 1.5rem 1rem', display: 'flex', flexDirection: 'column' }}>
+                    <label className="flex flex-col flex-1 group" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                        <div className="flex justify-between items-center pb-2 px-1" style={{ paddingBottom: '0.5rem', paddingLeft: '0.25rem' }}>
+                            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Memories & Feelings</p>
+                        </div>
+                        <textarea
+                            autoFocus
+                            className="review-textarea custom-scrollbar"
+                            placeholder="이 날은 어땠나요? QWER과 함께한 소중한 순간을 기록해 보세요."
+                            value={reviewText}
+                            onChange={(e) => setReviewText(e.target.value)}
+                        />
+                    </label>
                 </div>
             </main>
 
             {/* Footer */}
-            <footer className="review-page-bg border-t border-slate-200 pb-8 pt-4 px-4" style={{ borderTop: '1px solid #e2e8f0', paddingBottom: '2rem', paddingTop: '1rem', paddingLeft: '1rem', paddingRight: '1rem' }}>
+            <footer className="review-page-bg border-t border-slate-200" style={{
+                borderTop: '1px solid #e2e8f0',
+                padding: '1rem 1rem calc(1rem + env(safe-area-inset-bottom)) 1rem',
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 50
+            }}>
                 <div className="max-w-md mx-auto flex gap-4 items-center" style={{ maxWidth: '28rem', margin: '0 auto', display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     <button
                         onClick={() => navigate(-1)}

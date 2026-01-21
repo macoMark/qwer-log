@@ -74,29 +74,18 @@ function Dashboard({ user, onLogout }) {
     const [selectedYear, setSelectedYear] = useState(2025)
 
     // Scroll Listener for FAB
-    // Scroll Listener for FAB (Updated for internal container scrolling)
+    // Scroll Listener for FAB (Window scroll)
     useEffect(() => {
-        const handleScroll = (e) => {
-            // Check the scrollTarget (should be the .flex-1 container)
-            const target = e.target;
-            if (target.scrollTop > 300) {
+        const handleScroll = () => {
+            if (window.scrollY > 300) {
                 setShowScrollTop(true)
             } else {
                 setShowScrollTop(false)
             }
         }
 
-        // Attach to the scrolling container
-        const container = document.querySelector('.overflow-y-auto');
-        if (container) {
-            container.addEventListener('scroll', handleScroll);
-        }
-
-        return () => {
-            if (container) {
-                container.removeEventListener('scroll', handleScroll);
-            }
-        }
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
     // Handlers
@@ -238,13 +227,12 @@ function Dashboard({ user, onLogout }) {
 
     return (
         <div className="main-container" style={{
-            height: '100%',
+            minHeight: '100dvh',
             display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden'
+            flexDirection: 'column'
         }}>
-            {/* Header - Fixed Height */}
-            <header className="app-header" style={{ flexShrink: 0 }}>
+            {/* Header */}
+            <header className="app-header">
                 <div className="logo-container" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
                     <img src="/assets/logo.png" alt="QWER LOG" style={{ height: '40px', objectFit: 'contain' }} />
                 </div>
@@ -276,14 +264,11 @@ function Dashboard({ user, onLogout }) {
                 </div>
             </header>
 
-            {/* Scrollable Content Area */}
-            <div className="flex-1 overflow-y-auto no-scrollbar relative" style={{
-                flex: 1,
-                overflowY: 'auto',
-                position: 'relative'
-            }}>
+            {/* Content Area */}
+            <div className="flex-1 relative">
                 {/* Control Bar */}
                 <section className="control-bar-section" style={{ padding: '0 1rem', marginTop: '1rem', marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {/* ... content ... */}
                     {/* Year Selector */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)' }}>
                         <button disabled style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'default' }}>&lt;</button>
@@ -530,12 +515,7 @@ function Dashboard({ user, onLogout }) {
 
             {/* Scroll to Top FAB */}
             <button
-                onClick={() => {
-                    // Find the scrollable container and scroll IT to top, not window
-                    const container = document.querySelector('.overflow-y-auto');
-                    if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
-                    else window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 style={{
                     position: 'fixed',
                     bottom: 'calc(2rem + env(safe-area-inset-bottom))',

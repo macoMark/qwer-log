@@ -57,9 +57,7 @@ body {
 }
 
 #root {
-  height: 100vh;
-  /* Fallback */
-  height: 100dvh;
+  min-height: 100dvh;
   isolation: isolate;
   display: flex;
   flex-direction: column;
@@ -113,10 +111,8 @@ button {
 
 /* App Container */
 .app-container {
-  height: 100%;
   width: 100%;
-  overflow: hidden;
-  /* Prevent body scroll, let content scroll */
+  /* Prevent body scroll, let content scroll - REVERTED */
   display: flex;
   flex-direction: column;
 }

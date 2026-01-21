@@ -77,7 +77,8 @@ function ReviewViewPage() {
     }
 
     return (
-        <div className="review-page-bg min-h-screen flex flex-col overflow-hidden font-display">
+
+        <div className="review-page-bg min-h-screen font-display" style={{ minHeight: '100dvh' }}>
             {/* Header */}
             <header className="sticky top-0 z-50 glass-header">
                 <div className="flex items-center p-4 justify-between max-w-md mx-auto" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '28rem', margin: '0 auto', padding: '1rem' }}>
@@ -101,7 +102,7 @@ function ReviewViewPage() {
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col max-w-md mx-auto w-full overflow-y-auto custom-scrollbar" style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '28rem', margin: '0 auto', overflowY: 'auto' }}>
+            <main className="max-w-md mx-auto w-full custom-scrollbar" style={{ width: '100%', maxWidth: '28rem', margin: '0 auto', paddingBottom: 'calc(6rem + env(safe-area-inset-bottom))' }}>
                 <div className="px-4 py-4" style={{ padding: '1rem' }}>
                     <div className="review-surface rounded-xl p-4 flex items-center gap-4 shadow-sm" style={{ borderRadius: '0.75rem', padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
                         <div className="flex flex-col justify-center min-w-0">
@@ -133,7 +134,15 @@ function ReviewViewPage() {
             </main>
 
             {/* Footer */}
-            <footer className="review-page-bg border-t border-slate-200 pb-10 pt-4 px-4" style={{ borderTop: '1px solid #e2e8f0', paddingBottom: '2.5rem', paddingTop: '1rem', paddingLeft: '1rem', paddingRight: '1rem' }}>
+            <footer className="review-page-bg border-t border-slate-200" style={{
+                borderTop: '1px solid #e2e8f0',
+                padding: '1rem 1rem calc(1rem + env(safe-area-inset-bottom)) 1rem',
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 50
+            }}>
                 <div className="max-w-md mx-auto" style={{ maxWidth: '28rem', margin: '0 auto' }}>
                     <button
                         onClick={handleEdit}
