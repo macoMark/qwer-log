@@ -632,8 +632,53 @@ body.dark .attend-btn {
   color: #cbd5e1;
 }
 
+
 body.dark .attend-btn:hover {
   background-color: rgba(255, 255, 255, 0.05);
+}
+
+.checkin-btn {
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  color: #475569;
+  /* slate-600 */
+  padding: 0.5rem 1rem;
+  /* Larger padding */
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  /* Larger font */
+  font-weight: 700;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.checkin-btn:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.checkin-btn.active {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.checkin-btn.active:hover {
+  background-color: var(--primary-hover);
+}
+
+body.dark .checkin-btn {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+body.dark .checkin-btn.active {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
 }
 
 .attendance-badge {

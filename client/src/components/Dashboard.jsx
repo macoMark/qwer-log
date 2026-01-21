@@ -1,23 +1,52 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import useSWR, { mutate } from 'swr'
 
-// Helper to format dates
+// Fetcher function
+const fetcher = (url) => fetch(url).then((res) => res.json())
+
 const getDay = (dateStr) => {
     const d = new Date(dateStr)
-    return d.getDate().toString().padStart(2, '0')
+    return d.getDate()
 }
+
 const getWeekday = (dateStr) => {
-    const d = new Date(dateStr)
     const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-    const koDays = ['일', '월', '화', '수', '목', '금', '토']
-    const dayIdx = d.getDay()
-    return `${days[dayIdx]} (${koDays[dayIdx]})`
+    const d = new Date(dateStr)
+    return days[d.getDay()]
 }
 
 function Dashboard({ user, onLogout }) {
     const navigate = useNavigate()
-    const [events, setEvents] = useState([])
-    const [attendance, setAttendance] = useState({})
+
+    // SWR for Events
+    const { data: eventsData, error: eventsError, isLoading: eventsLoading } = useSWR('/api/events', fetcher, {
+        revalidateOnFocus: false, // Don't revalidate on window focus to reduce requests
+        dedupingInterval: 60000, // Cache for 1 minute
+    })
+
+    // SWR for Attendance
+    const { data: attendanceData, error: attendanceError, isLoading: attendanceLoading, mutate: mutateAttendance } = useSWR(
+        user?.id ? `/api/attendance?userId=${user.id}` : null,
+        fetcher
+    )
+
+    // Derived states
+    const events = useMemo(() => eventsData?.events || [], [eventsData])
+
+    const attendance = useMemo(() => {
+        const map = {}
+        if (attendanceData?.attendance) {
+            attendanceData.attendance.forEach(record => {
+                map[record.event_id] = {
+                    status: !!record.status,
+                    review_text: record.review_text
+                }
+            })
+        }
+        return map
+    }, [attendanceData])
+
     const [filter, setFilter] = useState(() => {
         // Initialize from localStorage or default to false
         const savedFansign = localStorage.getItem('filter_include_fansign')
@@ -33,7 +62,10 @@ function Dashboard({ user, onLogout }) {
         localStorage.setItem('filter_include_fansign', JSON.stringify(filter.fansign))
         localStorage.setItem('filter_include_overseas', JSON.stringify(filter.overseas))
     }, [filter])
-    const [loading, setLoading] = useState(true)
+
+    // Loading State
+    const loading = eventsLoading || (user?.id && attendanceLoading)
+
     // Removed Review Modal states
     const [filterModalOpen, setFilterModalOpen] = useState(false)
 
@@ -54,33 +86,6 @@ function Dashboard({ user, onLogout }) {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
-    useEffect(() => {
-        const promises = [fetch('/api/events').then(res => res.json())];
-
-        if (user?.id) {
-            promises.push(fetch(`/api/attendance?userId=${user.id}`).then(res => res.json()));
-        }
-
-        Promise.all(promises).then(([eventsData, attendanceData]) => {
-            setEvents(eventsData.events || [])
-            const attendanceMap = {}
-
-            if (attendanceData && attendanceData.attendance) {
-                attendanceData.attendance.forEach(record => {
-                    attendanceMap[record.event_id] = {
-                        status: !!record.status,
-                        review_text: record.review_text
-                    }
-                })
-            }
-            setAttendance(attendanceMap)
-            setLoading(false)
-        }).catch(err => {
-            console.error(err)
-            setLoading(false)
-        })
-    }, [user?.id])
-
     // Handlers
     const handleToggleAttendance = async (eventId, currentStatus) => {
         if (!user) {
@@ -89,22 +94,34 @@ function Dashboard({ user, onLogout }) {
         }
 
         const newStatus = !currentStatus
-        setAttendance(prev => ({
-            ...prev,
-            [eventId]: { ...prev[eventId], status: newStatus }
-        }))
+
+        // Optimistic Update
+        mutateAttendance(async (currentData) => {
+            // Optimistically update the UI
+            const updatedAttendance = currentData?.attendance ? [...currentData.attendance] : []
+            const existingIndex = updatedAttendance.findIndex(r => r.event_id === eventId)
+
+            if (existingIndex >= 0) {
+                updatedAttendance[existingIndex] = { ...updatedAttendance[existingIndex], status: newStatus ? 1 : 0 }
+            } else {
+                updatedAttendance.push({ event_id: eventId, status: newStatus ? 1 : 0, review_text: null })
+            }
+
+            return { ...currentData, attendance: updatedAttendance }
+        }, { revalidate: false }) // Don't revalidate immediately
+
         try {
             await fetch('/api/attendance', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId: user.id, eventId, status: newStatus })
             })
+            // Revalidate after success to ensure consistency
+            mutateAttendance()
         } catch (err) {
             console.error(err)
-            setAttendance(prev => ({
-                ...prev,
-                [eventId]: { ...prev[eventId], status: currentStatus }
-            }))
+            // Revert on error
+            mutateAttendance()
         }
     }
 
@@ -423,7 +440,7 @@ function Dashboard({ user, onLogout }) {
 
                                                             <button
                                                                 onClick={() => handleToggleAttendance(ev.id, isAttended)}
-                                                                className={isAttended ? "attendance-badge" : "attend-btn"}
+                                                                className={isAttended ? "attendance-badge" : "checkin-btn"}
                                                             >
                                                                 {isAttended ? (
                                                                     <>

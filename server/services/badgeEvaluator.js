@@ -84,7 +84,11 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
     // 특정 이벤트/태그 기반
     if (counts.sanok >= 1) earnedCandidateCodes.push('sanok');
     if (counts.qbung >= 1) earnedCandidateCodes.push('qbung');
-    if (counts.anniversary >= 1) earnedCandidateCodes.push('anni-1');
+
+    // Anniversary Badge Logic
+    if (counts.anniversary >= 4) earnedCandidateCodes.push('anni-1');
+    else if (counts.anniversary >= 2) earnedCandidateCodes.push('anni-0');
+
     if (counts.harsh >= 1) earnedCandidateCodes.push('harsh');
     if (counts.draw >= 1) earnedCandidateCodes.push('yulyul');
 
