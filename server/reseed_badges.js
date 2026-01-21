@@ -218,12 +218,21 @@ const badges = [
         "priority": 240
     },
     {
-        "badge_code": "yulyul",
+        "badge_code": "yulyul-5",
+        "badge_name": "율율의 가호 Master",
+        "badge_condition": "추첨 이벤트 5회 이상 참석",
+        "badge_detail": "율율의 가호가 당신의 2025년을 가득 채웠습니다!",
+        "badge_logic_memo": "획득한 tags가 draw >= 5",
+        "badge_image_url": "/assets/badges/yulyul-5.png",
+        "priority": 249
+    },
+    {
+        "badge_code": "yulyul-1",
         "badge_name": "율율의 가호",
         "badge_condition": "추첨 이벤트 1회 이상 참석",
         "badge_detail": "율율의 가호가 함께합니다.",
         "badge_logic_memo": "획득한 tags가 draw >=1",
-        "badge_image_url": "/assets/badges/yulyul.png",
+        "badge_image_url": "/assets/badges/yulyul-1.png",
         "priority": 250
     },
     {

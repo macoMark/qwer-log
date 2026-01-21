@@ -90,7 +90,8 @@ const calculateUserBadges = (userAttendance, allBadges, allEvents) => {
     else if (counts.anniversary >= 2) earnedCandidateCodes.push('anni-half');
 
     if (counts.harsh >= 1) earnedCandidateCodes.push('harsh');
-    if (counts.draw >= 1) earnedCandidateCodes.push('yulyul');
+    if (counts.draw >= 5) earnedCandidateCodes.push('yulyul-5');
+    if (counts.draw >= 1) earnedCandidateCodes.push('yulyul-1');
 
     // --- [2. 레벨형 뱃지 로직 (최고 단계 판별용)] ---
 

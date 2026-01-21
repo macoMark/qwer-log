@@ -128,7 +128,7 @@ function LoginPage({ onLogin }) {
                             <li style={{ marginBottom: '0.25rem' }}>비밀번호 찾기 기능이 제공되지 않습니다.</li>
                             <li>
                                 비밀번호 분실 시 오픈채팅방으로 문의해주세요. {' '}
-                                <a href="#" style={{ textDecoration: 'underline', color: '#888888', cursor: 'pointer' }} onClick={(e) => e.preventDefault()}>
+                                <a href="https://open.kakao.com/o/s3ujgxci" style={{ textDecoration: 'underline', color: '#888888', cursor: 'pointer' }} onClick={(e) => e.preventDefault()}>
                                     [오픈채팅방 문의하기]
                                 </a>
                             </li>
