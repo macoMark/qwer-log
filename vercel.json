@@ -23,6 +23,10 @@
             "destination": "/client/assets/$1"
         },
         {
+            "source": "/(.*\\..*)",
+            "destination": "/client/$1"
+        },
+        {
             "source": "/((?!api/|assets/|.*\\..*).*)",
             "destination": "/client/index.html"
         }
