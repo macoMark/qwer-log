@@ -81,7 +81,7 @@ function LoginPage({ onLogin }) {
                         <input
                             className="login-input"
                             type="password"
-                            placeholder="패스워드 (4글자 숫자)"
+                            placeholder="비밀번호 (4글자)"
                             maxLength={4}
                             value={password}
                             onChange={(e) => {
@@ -120,15 +120,30 @@ function LoginPage({ onLogin }) {
                     </p>
                 </div>
 
+                {isLogin && (
+                    <div style={{ width: '100%', marginTop: '2.5rem', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem', textAlign: 'left' }}>
+                        <ul style={{ fontSize: '0.85rem', color: '#888888', paddingLeft: '1rem', listStyleType: 'disc', lineHeight: '1.6', margin: 0 }}>
+                            <li style={{ marginBottom: '0.25rem' }}>로그인 시 브라우저에서 비밀번호 유출 경고가 발생할 수 있습니다.</li>
+                            <li style={{ marginBottom: '0.25rem' }}>쉬운 비밀번호 (ex. 0000, 1234) 사용으로 인한 경고이며 실제로 일어나는 비밀번호 유출은 아니니 안심하세요.</li>
+                            <li>비밀번호는 개발자도 알지 못하도록 암호화되어 저장됩니다.</li>
+                        </ul>
+                    </div>
+                )}
+
                 {!isLogin && (
                     <div style={{ width: '100%', marginTop: '2.5rem', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem', textAlign: 'left' }}>
                         <ul style={{ fontSize: '0.85rem', color: '#888888', paddingLeft: '1rem', listStyleType: 'disc', lineHeight: '1.6', margin: 0 }}>
-                            <li style={{ marginBottom: '0.25rem' }}>비밀번호는 4글자의 숫자만 입력 가능합니다.</li>
-                            <li style={{ marginBottom: '0.25rem' }}>비밀번호는 암호화되어 안전하게 저장됩니다.</li>
+                            <li style={{ marginBottom: '0.25rem' }}>문자와 숫자 4글자로 이루어진 비밀번호를 만들 수 있습니다.</li>
+                            <li style={{ marginBottom: '0.25rem' }}>비밀번호는 개발자도 알지 못하도록 암호화되어 저장됩니다.</li>
                             <li style={{ marginBottom: '0.25rem' }}>비밀번호 찾기 기능이 제공되지 않습니다.</li>
                             <li>
                                 비밀번호 분실 시 오픈채팅방으로 문의해주세요. {' '}
-                                <a href="https://open.kakao.com/o/s3ujgxci" style={{ textDecoration: 'underline', color: '#888888', cursor: 'pointer' }} onClick={(e) => e.preventDefault()}>
+                                <a
+                                    href="https://open.kakao.com/o/s3ujgxci"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ textDecoration: 'underline', color: '#888888', cursor: 'pointer' }}
+                                >
                                     [오픈채팅방 문의하기]
                                 </a>
                             </li>
